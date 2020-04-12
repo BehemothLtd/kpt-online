@@ -2,9 +2,9 @@ module.exports = (mongoose) => {
   var schema = mongoose.Schema(
     {
       name: String,
+      createdBy: { required: true, type: mongoose.Schema.Types.ObjectId, ref: 'user' },
       users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
       stickies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'sticky' }],
-      created_by: Number
     },
     { timestamps: true }
   );

@@ -10,31 +10,37 @@ exports.authenticate = (req, res) => {
     return;
   }
 
-  const email = req.body.email;
+  const emailReq = req.body.email;
   const password = req.body.password;
+  console.log(`email = ${emailReq}. password =${password}`);
 
-  User.findOne({ email })
-    .then((data) => {
-      const user = data;
-      bcrypt.compare(password, user.password, (err, data) => {
-        if (err) throw err;
-        if (data) {
-          const userInfo = {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+  User.findOne({ email: emailReq })
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        bcrypt.compare(password, user.password, (err, data) => {
+          if (err) throw err;
+
+          if (data) {
+            const userInfo = {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt,
+            };
+            const token = jwt.sign({ userInfo }, "SECRET");
+
+            res.status(200).send({
+              token,
+            });
+          } else {
+            res.status(401).json({ message: err || "Invalid credentials" });
           }
-          const token = jwt.sign({ userInfo }, "SECRET");
-  
-          res.status(400).send({
-            token
-          });
-        } else {
-          res.status(401).json({ message: err||"Invalid credentials" });
-        }
-      });
+        });
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
     })
     .catch((err) => {
       res.status(500).send({
