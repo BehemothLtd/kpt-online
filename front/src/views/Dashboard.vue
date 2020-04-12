@@ -21,7 +21,6 @@ export default {
         name: this.boardName
       });
 
-      console.log(response.data);
       this.$router.push({ path: `/boards/${response.data.id}` })
     }
   }

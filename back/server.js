@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const app = express();
 
+
 const corsOptions = {
   origin: "http://localhost:8081",
 }
@@ -33,6 +34,20 @@ app.get("/", (req, res) => {
 require("./app/routes/board.routes")(app);
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 })
+const io = require('socket.io')(server);
+
+io.on('connection', function(socket) {
+  socket.on('USER_JOIN', function(data) {
+    console.log(data);
+    io.emit('ON_USER_JOIN', `${data.name} joined board !!!!`)
+  });
+
+  socket.on('CREATE_CARD', function(data) {
+    io.emit('ON_CREATE_CARD', {
+      card: data.card
+    })
+  });
+});

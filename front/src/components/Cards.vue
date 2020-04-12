@@ -1,35 +1,32 @@
 <template>
-  <div>
-    <ul class="keep">
-      <li v-for="card in keeps" :key="card.id">
-        <div>
-          {{ card.content }}
-          <br />
-          {{ card.type }}
-          <br />
-          {{ card.user }}
+  <div class="container">
+    <ul>
+      <li v-for="card in keeps" :key="card.id" class="cards__item">
+        <div class="card bg-primary">
+          <div class="card-body">
+            <div class="card-title">{{ card.user }}</div>
+            <p class="card-text">{{ card.content }}</p>
+          </div>
         </div>
       </li>
     </ul>
-    <ul class="problem">
+    <ul>
       <li v-for="card in problems" :key="card.id">
-        <div>
-          {{ card.content }}
-          <br />
-          {{ card.type }}
-          <br />
-          {{ card.user }}
+        <div class="card bg-danger">
+          <div class="card-body">
+            <div class="card-title">{{ card.user }}</div>
+            <p class="card-text">{{ card.content }}</p>
+          </div>
         </div>
       </li>
     </ul>
-    <ul class="try">
+    <ul>
       <li v-for="card in trys" :key="card.id">
-        <div>
-          {{ card.content }}
-          <br />
-          {{ card.type }}
-          <br />
-          {{ card.user }}
+        <div class="card bg-warning">
+          <div class="card-body">
+            <div class="card-title">{{ card.user }}</div>
+            <p class="card-text">{{ card.content }}</p>
+          </div>
         </div>
       </li>
     </ul>
@@ -59,13 +56,14 @@ export default {
 </script>
 
 <style>
-.keep {
-  background-color: green;
+.container {
+  display: flex;
 }
-.problem {
-  background-color: red;
+ul {
+  list-style-type: none;
 }
-.try {
-  background-color: yellow;
+
+.card {
+  margin-top: 5px;
 }
 </style>

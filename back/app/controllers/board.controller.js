@@ -49,7 +49,6 @@ exports.findOne = (req, res) => {
 }
 
 exports.fetchCards = (req, res) => {
-  console.log("aaaa")
   const id = req.params.id;
 
   Card.find({ board: id })

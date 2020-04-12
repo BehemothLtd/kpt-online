@@ -15,7 +15,7 @@ export default {
   },
   data: function() {
     return {
-      board: null
+      board: null,
     };
   },
   created: function() {
@@ -32,6 +32,3 @@ export default {
   }
 };
 </script>
-
-<style>
-</style>
