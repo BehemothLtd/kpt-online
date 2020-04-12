@@ -1,19 +1,15 @@
 module.exports = app => {
-  const stickys = require("../controllers/sticky.controller.js");
+  const stickies = require("../controllers/sticky.controller.js");
 
   var router = require("express").Router();
 
-  router.post("/", stickys.create);
+  router.post("/", stickies.create);
 
-  router.get("/", stickys.findAll);
+  router.get("/", stickies.findAll);
 
-  router.get("/:id", stickys.findOne);
+  router.put("/:id", stickies.update);
 
-  router.put("/:id", stickys.update);
+  router.delete("/:id", stickies.delete);
 
-  router.delete("/:id", stickys.delete);
-
-  router.delete("/", stickys.deleteAll);
-
-  app.use('/api/stickys', router);
+  app.use('/api/stickies', router);
 };

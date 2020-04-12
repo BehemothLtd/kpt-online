@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap-vue": "^2.11.0",
     "cors": "^2.8.5",
     "finale-rest": "^1.1.1",

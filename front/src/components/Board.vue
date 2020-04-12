@@ -10,63 +10,64 @@
     </div>
 
     <b-row>
-      <b-col xs="12" sm="10">
+      <b-col>
+        <h1>
+          Keep
+          <b-button pill variant="outline-success" @click="addSticky('k')">Add</b-button>
+        </h1>
+
         <b-row>
-          <b-col>
-            <h1>
-              Keep
-              <b-button pill variant="outline-success" @click="addSticky('k')">Add</b-button>
-            </h1>
-
-            <b-row>
-              <b-col v-for="(item, index) in keeps" :key="index" xs="12" sm="6" md="3">
-                <Sticky
-                  :data="item"
-                  class="mb-4"
-                  :index="index"
-                  @add="addSticky('k')"
-                  @close="removeKeep('k', item.id)"
-                ></Sticky>
-              </b-col>
-            </b-row>
-
-            <h1>
-              Problem
-              <b-button pill variant="outline-success" @click="addSticky('p')">Add</b-button>
-            </h1>
-
-            <b-row>
-              <b-col v-for="(item, index) in problems" :key="index" xs="12" sm="6" md="3">
-                <Sticky
-                  :data="item"
-                  class="mb-4"
-                  :index="index"
-                  @add="addSticky('p')"
-                  @close="removeKeep('p', item.id)"
-                ></Sticky>
-              </b-col>
-            </b-row>
-
-            <h1>
-              Try
-              <b-button pill variant="outline-success" @click="addSticky('t')">Add</b-button>
-            </h1>
-
-            <b-row>
-              <b-col v-for="(item, index) in tries" :key="index" xs="12" sm="6" md="3">
-                <Sticky
-                  :data="item"
-                  class="mb-4"
-                  :index="index"
-                  @add="addSticky('t')"
-                  @close="removeKeep('t', item.id)"
-                ></Sticky>
-              </b-col>
-            </b-row>
+          <b-col v-for="(item, index) in keeps" :key="index" cols="12">
+            <Sticky
+              :data="item"
+              class="mb-4"
+              :index="index"
+              @add="addSticky('k')"
+              @close="removeKeep('k', item.id)"
+            ></Sticky>
           </b-col>
         </b-row>
       </b-col>
-      <b-col xs="12" sm="2">
+
+      <b-col>
+        <h1>
+          Problem
+          <b-button pill variant="outline-success" @click="addSticky('p')">Add</b-button>
+        </h1>
+
+        <b-row>
+          <b-col v-for="(item, index) in problems" :key="index" cols="12">
+            <Sticky
+              :data="item"
+              class="mb-4"
+              :index="index"
+              @add="addSticky('p')"
+              @close="removeKeep('p', item.id)"
+            ></Sticky>
+          </b-col>
+        </b-row>
+      </b-col>
+
+      <b-col>
+        <h1>
+          Try
+          <b-button pill variant="outline-success" @click="addSticky('t')">Add</b-button>
+        </h1>
+
+        <b-row>
+          <b-col v-for="(item, index) in tries" :key="index" cols="12">
+            <Sticky
+              :data="item"
+              class="mb-4"
+              :index="index"
+              @add="addSticky('t')"
+              @close="removeKeep('t', item.id)"
+            ></Sticky>
+          </b-col>
+        </b-row>
+      </b-col>
+
+      <b-col xs="12" sm="6" md="3">
         <BoardMember />
       </b-col>
     </b-row>
@@ -90,8 +91,12 @@ export default {
       tries: [],
       boardId: this.$route.params.id,
       boardName: "",
-      socket: io("localhost:3001")
+      socket: io(this.$apiURL)
     };
+  },
+  created() {
+    this.fetchBoard();
+    this.fetchStickies();
   },
   mounted() {
     this.socket.on("STICKY_CREATED", data => {
@@ -139,25 +144,51 @@ export default {
     });
   },
   methods: {
-    addSticky(type) {
-      this.socket.emit("CREATE_STICKY", {
-        boardId: this.boardId,
-        type: type
-      });
+    async fetchBoard() {
+      const result = await this.$axios.get(
+        this.$apiURL + "/api/boards/" + this.boardId
+      );
+      if (result.data) this.boardName = result.data.name;
     },
-    removeKeep(type, id) {
-      this.socket.emit("DELETE_STICKY", {
+
+    async fetchStickies() {
+      const result = await this.$axios.get(this.$apiURL + "/api/stickies", {
+        boardId: this.boardId
+      });
+
+      if (result.data) {
+        this.keeps = result.data.filter(item => item.type == "k");
+        this.problems = result.data.filter(item => item.type == "p");
+        this.tries = result.data.filter(item => item.type == "t");
+      }
+    },
+
+    async addSticky(type) {
+      const result = await this.$axios.post(this.$apiURL + "/api/stickies", {
         boardId: this.boardId,
         type: type,
-        id: id
+        createdBy: "5e92e79a1278b456ccc89869"
       });
+
+      if (result.data) this.socket.emit("CREATE_STICKY", result.data);
     },
-    rename() {
-      this.socket.emit("RENAME_BOARD", {
-        id: this.boardId,
-        name: this.boardName
-      });
+
+    async removeKeep(type, id) {
+      const result = await this.$axios.delete(
+        this.$apiURL + "/api/stickies/" + id
+      );
+      if (result.data) this.socket.emit("DELETE_STICKY", result.data);
     },
+
+    async rename() {
+      const result = await this.$axios.put(
+        this.$apiURL + "/api/boards/" + this.boardId,
+        { name: this.boardName }
+      );
+
+      if (result.data) this.socket.emit("RENAME_BOARD", result.data);
+    },
+
     findInArray(id, array) {
       return array.findIndex(item => item.id == id);
     }

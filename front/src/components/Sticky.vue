@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      socket: io("localhost:3001")
+      socket: io(this.$apiURL)
     };
   },
   mounted() {

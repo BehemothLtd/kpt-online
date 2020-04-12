@@ -13,6 +13,7 @@ module.exports = (mongoose) => {
         type: mongoose.Schema.Types.ObjectId,
         ref: "board",
       },
+      type: String
     },
     { timestamps: true }
   );

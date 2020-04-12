@@ -23,7 +23,7 @@
             <b-link :href="'/#/board/'+item.id">{{ item.name }}</b-link>
           </b-td>
           <b-td>{{ item.created_by }}</b-td>
-          <b-td>{{ item.created_at }}</b-td>
+          <b-td>{{ item.createdAt }}</b-td>
           <b-td>
             <b-button pill variant="outline-danger" @click="deleteBoard(item)">Delete</b-button>
           </b-td>
@@ -42,22 +42,13 @@ export default {
       newBoard: {
         name: ""
       },
-      list: [
-        {
-          id: 1,
-          name: "Week 01",
-          created_by: "VuTH",
-          created_at: Date()
-        },
-        {
-          id: 2,
-          name: "Week 02",
-          created_by: "BachDX",
-          created_at: Date()
-        }
-      ],
-      socket: io("localhost:3001")
+      list: [],
+      socket: io(this.$apiURL),
+      baseURL: this.$apiURL + "/api/boards/"
     };
+  },
+  created() {
+    this.fetchList();
   },
   mounted() {
     this.socket.on("BOARD_CREATED", data => {
@@ -70,18 +61,28 @@ export default {
     });
   },
   methods: {
-    addBoard() {
+    async fetchList() {
+      const result = await this.$axios.get(this.baseURL);
+      this.list = result.data;
+    },
+    async addBoard() {
       if (this.newBoard.name) {
-        this.socket.emit("CREATE_BOARD", this.newBoard.name);
-        this.newBoard.name = "";
+        const result = await this.$axios.post(this.baseURL, {
+          name: this.newBoard.name
+        });
+        if (result) {
+          this.socket.emit("CREATE_BOARD", result.data);
+          this.newBoard.name = "";
+        }
       }
     },
     deleteBoard(item) {
       this.$bvModal
         .msgBoxConfirm('Are you sure to delete this board:"' + item.name + '"?')
-        .then(value => {
+        .then(async value => {
           if (value) {
-            this.socket.emit("DELETE_BOARD", item.id);
+            const result = await this.$axios.delete(this.baseURL + item.id);
+            if (result) this.socket.emit("DELETE_BOARD", result.data);
           }
         });
     },

@@ -34,6 +34,12 @@ Vue.use(vueDebounce, {
   defaultTime: '700ms'
 })
 
+import API from './config';
+Vue.prototype.$apiURL = API.apiURL;
+
+import Axios from './axios';
+Vue.prototype.$axios = Axios;
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
