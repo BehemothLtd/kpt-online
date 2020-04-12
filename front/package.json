@@ -13,6 +13,8 @@
     "bootstrap-vue": "^2.11.0",
     "cors": "^2.8.5",
     "finale-rest": "^1.1.1",
+    "html2canvas": "^1.0.0-rc.5",
+    "jspdf": "^1.5.3",
     "mongodb": "^3.5.5",
     "sequelize": "^5.21.6",
     "vue": "^2.5.2",
