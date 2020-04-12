@@ -17,8 +17,6 @@ export default {
   },
   methods: {
     submit: async function() {
-      console.log(this.boardName);
-
       const response = await axios.post("http://localhost:8080/api/boards", {
         name: this.boardName
       });

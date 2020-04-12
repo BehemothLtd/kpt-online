@@ -1,13 +1,14 @@
 <template>
   <div>
-    {{ board.name }}
+    Board: {{ board.name }}
+    <br />
+    User: {{ user.name }}
     <div v-if="!user">
       <input type="text" v-model="email" />
       <input type="text" v-model="name" />
       <button @click="submit">Submit</button>
     </div>
     <div v-else>
-      {{ user }}
       <div>
         Create card
         type:
@@ -42,7 +43,6 @@ export default {
       email: null,
       name: null,
       cards: [],
-      user: null,
       card: {
         type: null,
         content: null,
@@ -53,6 +53,11 @@ export default {
   },
   created: function() {
     this.fetchCards();
+
+    if (this.$store.state.user) {
+      this.user = this.$store.state.user;
+      console.log(this.user);
+    }
   },
   methods: {
     fetchCards: async function() {
@@ -72,8 +77,10 @@ export default {
       );
 
       this.user = response.data;
+      this.$store.dispatch("setUser", this.user);
     },
     createCard: async function() {
+      console.log(this.user);
       const response = await axios.post(
         `http://localhost:8080/api/boards/${this.$route.params.id}/createCard`,
         {
