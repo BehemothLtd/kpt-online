@@ -3,22 +3,37 @@
     <div class="note-header">
       <div class="add" @click="add"></div>
       <div class="title">
-        <input v-model="data.title" placeholder="Enter title" />
+        <input v-model="data.title" placeholder="Enter title" v-debounce:300ms="changed" />
       </div>
       <div class="close" @click="close"></div>
     </div>
     <div class="note-body">
-      <textarea v-model="data.content"></textarea>
+      <textarea v-model="data.content" v-debounce:300ms="changed"></textarea>
     </div>
     <div class="note-footer">{{ data.created_at }}</div>
   </div>
 </template>
 
 <script>
+import io from "socket.io-client";
+
 export default {
   props: {
     data: Object,
     index: Number
+  },
+  data() {
+    return {
+      socket: io("localhost:3001")
+    };
+  },
+  mounted() {
+    this.socket.on("STICKY_UPDATED", data => {
+      if (this.data.id == data.id) {
+        this.$set(this.data, "title", data.title);
+        this.$set(this.data, "content", data.content);
+      }
+    });
   },
   methods: {
     add() {
@@ -26,6 +41,9 @@ export default {
     },
     close() {
       this.$emit("close", this.index);
+    },
+    changed(value) {
+      this.socket.emit("UPDATE_STICKY", this.data);
     }
   }
 };
