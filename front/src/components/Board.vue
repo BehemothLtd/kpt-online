@@ -30,6 +30,8 @@ export default {
     Sticky,
     BoardMember,
   },
+  props: {
+  },
   data() {
     return {
       boardId: 1,
@@ -42,6 +44,10 @@ export default {
       problems: [],
       tries: []
     };
+  },
+  created() {
+    console.log(this.$route);
+    this.boardId = this.$route.params.id;
   },
   methods: {
     addKeep() {
