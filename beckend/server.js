@@ -33,6 +33,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/turorial.routes.js")(app);
 require("./app/routes/board.routes.js")(app);
+require("./app/routes/board_member.routes.js")(app);
 require("./app/routes/sticky.routes.js")(app);
 require("./app/routes/user.routes.js")(app);
 

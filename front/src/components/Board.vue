@@ -95,6 +95,7 @@ export default {
       tries: [],
       boardId: this.$route.params.id,
       boardName: "",
+      members: [],
       socket: io(this.$apiURL)
     };
   },

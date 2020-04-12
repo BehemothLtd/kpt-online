@@ -1,6 +1,7 @@
 const db = require("../models");
 const jwtHelpper = require("../helpper/jwt_helpper");
 const Board = db.boards;
+const BoardMember = db.board_members;
 
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -15,7 +16,19 @@ exports.create = (req, res) => {
 
   board
     .save(board)
-    .then((data) => res.send(data))
+    .then(data => {
+      if (!data) res.status(500).send({ message: "Save failed" });
+
+      const boardMember = new BoardMember({
+        boardId: data.id,
+        memberId: data.createdBy
+      });
+
+      boardMember
+        .save(boardMember)
+        .then((data) => res.send(data))
+        .catch((err) => res.status(500).send({ message: err.message }));
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
@@ -53,6 +66,12 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
   Board.findByIdAndRemove(req.params.id)
-    .then((data) => res.send(data))
+    .then((data) => {
+      if (!data) res.status(500).send({ message: "Delete failed" });
+
+      BoardMember.deleteMany({ boardId: data.id })
+        .then((data) => res.send(data))
+        .catch((err) => res.status(500).send({ message: err.message }));
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };

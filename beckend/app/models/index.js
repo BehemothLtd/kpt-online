@@ -10,5 +10,6 @@ db.tutorials = require("./tutorial.model.js")(mongoose);
 db.boards = require("./board.model.js")(mongoose);
 db.stickies = require("./sticky.model.js")(mongoose);
 db.users = require("./user.model.js")(mongoose);
+db.board_members = require("./board_member.model.js")(mongoose);
 
 module.exports = db;

@@ -20,10 +20,10 @@
       <b-tbody>
         <b-tr v-for="item in list" :key="item.id">
           <b-td>
-            <b-link :href="'/#/board/'+item.id">{{ item.name }}</b-link>
+            <b-link :href="'/#/board/'+item.boardId._id">{{ item.boardId.name }}</b-link>
           </b-td>
-          <b-td>{{ item.createdBy.email }}</b-td>
-          <b-td>{{ item.createdAt }}</b-td>
+          <b-td>{{ item.boardId.createdBy.email }}</b-td>
+          <b-td>{{ item.boardId.createdAt }}</b-td>
           <b-td>
             <b-button pill variant="outline-danger" @click="deleteBoard(item)">Delete</b-button>
           </b-td>
@@ -44,7 +44,7 @@ export default {
       },
       list: [],
       socket: io(this.$apiURL),
-      baseURL: this.$apiURL + "/api/boards/"
+      baseURL: this.$apiURL + "/api/board_members/"
     };
   },
   created() {
@@ -52,12 +52,11 @@ export default {
   },
   mounted() {
     this.socket.on("BOARD_CREATED", data => {
-      this.list.push(data);
+      this.fetchList();
     });
 
     this.socket.on("BOARD_DELETED", data => {
-      const index = this.findInArray(data.id, this.list);
-      if (index != -1) this.list.splice(index, 1);
+      this.fetchList();
     });
   },
   methods: {
@@ -67,7 +66,7 @@ export default {
     },
     async addBoard() {
       if (this.newBoard.name) {
-        const result = await this.$axios.post(this.baseURL, {
+        const result = await this.$axios.post(this.$apiURL + "/api/boards", {
           name: this.newBoard.name
         });
         if (result) {
