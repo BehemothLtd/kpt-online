@@ -17,7 +17,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  Sticky.find(req.body)
+  Sticky.find(req.query)
     .then(data => res.send(data))
     .catch(err => res.status(500).send({ message: err.message }));
 };

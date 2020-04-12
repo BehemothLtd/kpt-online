@@ -152,9 +152,9 @@ export default {
     },
 
     async fetchStickies() {
-      const result = await this.$axios.get(this.$apiURL + "/api/stickies", {
-        boardId: this.boardId
-      });
+      const result = await this.$axios.get(
+        this.$apiURL + "/api/stickies?boardId=" + this.boardId
+      );
 
       if (result.data) {
         this.keeps = result.data.filter(item => item.type == "k");

@@ -4,12 +4,10 @@ module.exports = (mongoose) => {
       title: String,
       content: String,
       createdBy: {
-        required: true,
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
       },
       boardId: {
-        required: true,
         type: mongoose.Schema.Types.ObjectId,
         ref: "board",
       },
