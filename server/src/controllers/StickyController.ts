@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Sticky from "../config/mongoose-config";
+import Sticky from "../model/Sticky";
 
 // We'll start with allBooks which will return
 // every we have from our database
