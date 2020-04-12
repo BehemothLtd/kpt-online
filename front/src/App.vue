@@ -7,8 +7,7 @@
         <b-navbar-nav>
           <b-nav-item to="/">Home</b-nav-item>
           <b-nav-item to="/board-list">Board</b-nav-item>
-          <b-nav-item href="#" @click.prevent="login" v-if="!activeUser">Login</b-nav-item>
-          <b-nav-item href="#" @click.prevent="logout" v-else>Logout</b-nav-item>
+          <b-nav-item href="#" @click.prevent="logout" v-if="activeUser">Logout</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -25,17 +24,13 @@ export default {
       activeUser: null
     };
   },
-  async created() {
-    await this.refreshActiveUser();
-  },
-  watch: {
-    // everytime a route is changed refresh the activeUser
-    $route: "refreshActiveUser"
+  mounted() {
+    this.activeUser = window.localStorage.getItem("token");
   },
   methods: {
-    login() {},
-    async refreshActiveUser() {},
-    async logout() {
+    logout() {
+      window.localStorage.removeItem("token");
+      this.activeUser = null;
       this.$router.push("/");
     }
   }

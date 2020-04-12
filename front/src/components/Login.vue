@@ -58,7 +58,7 @@ export default {
         console.log(result.data);
 
         window.localStorage.setItem("token", result.data.token);
-        window.location.href = "/#/board-list";
+        this.$router.push("/board-list");
       } catch (e) {
         console.log(e);
       }

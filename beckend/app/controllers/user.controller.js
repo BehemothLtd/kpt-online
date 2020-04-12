@@ -12,7 +12,6 @@ exports.authenticate = (req, res) => {
 
   const emailReq = req.body.email;
   const password = req.body.password;
-  console.log(`email = ${emailReq}. password =${password}`);
 
   User.findOne({ email: emailReq })
     .then((user) => {

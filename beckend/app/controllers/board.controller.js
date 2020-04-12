@@ -20,7 +20,16 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  Board.find(req.body)
+  const user = jwtHelpper.userInfo(req);
+  if (!user || !user.id) {
+    res.status(403).send({ message: "Auth failed!" });
+    return;
+  }
+
+  const query = Object.assign({}, req.body);
+  query.createdBy = user.id;
+
+  Board.find(query)
     .populate("createdBy", "name email")
     .then((data) => res.send(data))
     .catch((err) => res.status(500).send({ message: err.message }));

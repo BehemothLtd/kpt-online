@@ -22,7 +22,7 @@
           <b-td>
             <b-link :href="'/#/board/'+item.id">{{ item.name }}</b-link>
           </b-td>
-          <b-td>{{ item.created_by }}</b-td>
+          <b-td>{{ item.createdBy.email }}</b-td>
           <b-td>{{ item.createdAt }}</b-td>
           <b-td>
             <b-button pill variant="outline-danger" @click="deleteBoard(item)">Delete</b-button>
