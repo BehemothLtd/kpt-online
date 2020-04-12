@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import io from "socket.io-client";
+
 export default {
   data() {
     return {
@@ -53,18 +55,24 @@ export default {
           created_by: "BachDX",
           created_at: Date()
         }
-      ]
+      ],
+      socket: io("localhost:3001")
     };
+  },
+  mounted() {
+    this.socket.on("BOARD_CREATED", data => {
+      this.list.push(data);
+    });
+
+    this.socket.on("BOARD_DELETED", data => {
+      const index = this.findInArray(data.id, this.list);
+      if (index != -1) this.list.splice(index, 1);
+    });
   },
   methods: {
     addBoard() {
       if (this.newBoard.name) {
-        this.list.push({
-          name: this.newBoard.name,
-          created_by: "VuTH",
-          created_at: Date()
-        });
-
+        this.socket.emit("CREATE_BOARD", this.newBoard.name);
         this.newBoard.name = "";
       }
     },
@@ -73,8 +81,12 @@ export default {
         .msgBoxConfirm('Are you sure to delete this board:"' + item.name + '"?')
         .then(value => {
           if (value) {
+            this.socket.emit("DELETE_BOARD", item.id);
           }
         });
+    },
+    findInArray(id, array) {
+      return array.findIndex(item => item.id == id);
     }
   }
 };
