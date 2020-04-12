@@ -3,11 +3,12 @@
     <h1 class="member-title">Member</h1>
     <div class="member-body">
       <b-row v-for="member in memberList" :key="member.id">
-        <a class="remove-btn" href="#" @click.prevent="removeMember(member)">
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </a>
-        &nbsp;
         {{member.name}} - {{member.email}}
+        <a
+          class="remove-btn"
+          href="#"
+          @click.prevent="removeMember(member)"
+        >(Remove)</a>
       </b-row>
     </div>
     <div class="member-footer">
@@ -20,9 +21,7 @@
             v-on:keyup.enter="addMember"
             placeholder="Input email here to invite a member"
           />
-          <button class="btn btn-success ml-2" @click="addMember">
-            <i class="fas fa-user-plus"></i>
-          </button>
+          <button class="btn btn-success ml-2" @click="addMember">Invite</button>
         </b-row>
       </div>
 

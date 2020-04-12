@@ -1,15 +1,17 @@
 <template>
   <div class="board p-4">
     <div>
-      <b-input-group prepend="Board name" class="mb-4">
+      <b-input-group prepend="Board name" class="mb-4 mr-4">
         <b-form-input v-model="boardName"></b-form-input>
         <b-input-group-append>
-          <b-button variant="outline-success" @click="rename">Rename</b-button>
+          <b-button variant="outline-primary" @click="rename">Rename</b-button>
         </b-input-group-append>
       </b-input-group>
+
+      <export-pdf id="output"></export-pdf>
     </div>
 
-    <b-row>
+    <b-row id="output">
       <b-col>
         <h1>
           Keep
@@ -78,11 +80,13 @@
 import Sticky from "./Sticky";
 import BoardMember from "./BoardMember";
 import io from "socket.io-client";
+import ExportPdf from "./ExportPdf";
 
 export default {
   components: {
     Sticky,
-    BoardMember
+    BoardMember,
+    ExportPdf
   },
   data() {
     return {
