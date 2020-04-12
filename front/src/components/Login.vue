@@ -45,7 +45,24 @@ export default {
     };
   },
   methods: {
-    submit() {}
+    async submit() {
+      try {
+        const result = await this.$axios({
+          method: "POST",
+          url: this.$apiURL + "/api/users/auth",
+          data: {
+            email: this.email,
+            password: this.password
+          }
+        });
+        console.log(result.data);
+
+        window.localStorage.setItem("token", result.data.token);
+        window.location.href = "/#/board-list";
+      } catch (e) {
+        console.log(e);
+      }
+    }
   }
 };
 </script>

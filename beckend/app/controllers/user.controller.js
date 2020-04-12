@@ -1,16 +1,70 @@
 const db = require("../models");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
 const User = db.users;
 
-exports.create = (req, res) => {
-  if (!req.body.email||!req.body.password) {
+exports.authenticate = (req, res) => {
+  if (!req.body.email || !req.body.password) {
     res.status(400).send({ message: "email&&password cannot be empty!" });
     return;
   }
 
+  const emailReq = req.body.email;
+  const password = req.body.password;
+  console.log(`email = ${emailReq}. password =${password}`);
+
+  User.findOne({ email: emailReq })
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        bcrypt.compare(password, user.password, (err, data) => {
+          if (err) throw err;
+
+          if (data) {
+            const userInfo = {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt,
+            };
+            const token = jwt.sign({ userInfo }, "SECRET");
+
+            res.status(200).send({
+              token,
+            });
+          } else {
+            res.status(401).json({ message: err || "Invalid credentials" });
+          }
+        });
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred.",
+      });
+    });
+};
+
+exports.create = (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    res.status(400).send({ message: "email&&password cannot be empty!" });
+    return;
+  }
+
+  // if (User.findOne({ email: req.body.email })) {
+  //   console.log(User.findOne({ email: req.body.email }));
+
+  //   throw 'Email "' + req.body.email + '" is already taken';
+  // }
+
   const user = new User({
     email: req.body.email,
     name: req.body.name,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password, 10),
   });
 
   user
@@ -20,8 +74,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the User.",
+        message: err.message || "Some error occurred while creating the User.",
       });
     });
 };
@@ -38,8 +91,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving users.",
+        message: err.message || "Some error occurred while retrieving users.",
       });
     });
 };
@@ -54,9 +106,7 @@ exports.findOne = (req, res) => {
       else res.send(data);
     })
     .catch((err) => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving User with id=" + id });
+      res.status(500).send({ message: "Error retrieving User with id=" + id });
     });
 };
 
@@ -115,8 +165,7 @@ exports.deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all users.",
+        message: err.message || "Some error occurred while removing all users.",
       });
     });
 };
