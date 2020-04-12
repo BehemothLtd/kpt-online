@@ -42,8 +42,15 @@ export default {
     close() {
       this.$emit("close", this.index);
     },
-    changed(value) {
-      this.socket.emit("UPDATE_STICKY", this.data);
+    async changed(value) {
+      const result = await this.$axios.put(
+        this.$apiURL + "/api/stickies/" + this.data.id,
+        {
+          title: this.data.title,
+          content: this.data.content
+        }
+      );
+      if (result.data) this.socket.emit("UPDATE_STICKY", result.data);
     }
   }
 };
