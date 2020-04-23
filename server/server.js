@@ -11,7 +11,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(jwt());
+// app.use(jwt());
 
 const db = require("./app/models");
 db.mongoose

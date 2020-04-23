@@ -8,17 +8,16 @@ import '@fortawesome/fontawesome-free/js/all.js'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import VueDraggable from 'vue-draggable'
+import VueSidebarMenu from 'vue-sidebar-menu'
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+import Axios from './axios';
 
-Vue.use(VueDraggable)
+Vue.use(VueSidebarMenu)
 Vue.config.productionTip = false
-
-// Install BootstrapVue
 Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
+Vue.prototype.$axios = Axios;
 
-/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,

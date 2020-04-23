@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import HelloWorld from "@/components/HelloWorld";
+import Dasboard from "@/components/Dasboard";
+import Login from "@/components/Login";
 
 import BoardList from "../components/Boards/List";
 import BoardDetail from "../components/Boards/Detail";
@@ -12,8 +13,13 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "HelloWorld",
-      component: HelloWorld
+      name: "Dasboard",
+      component: Dasboard
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: Login
     },
     {
       path: "/board",
