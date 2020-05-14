@@ -1,30 +1,32 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const dotenv = require('dotenv')
+const morgan = require('morgan')
+const bodyParser = require('body-parser')
+const expressValidator = require('express-validator')
+const routes = require('./routes/routes')
+const mongoose = require('mongoose')
 
-var mongodb = require('mongodb');
+const app = express();
+const PORT = process.env.PORT || 3000
+const db = mongoose.connection;
 
-//We need to work with "MongoClient" interface in order to connect to a mongodb server.
-var MongoClient = mongodb.MongoClient;
+dotenv.config()
 
-// Connection URL. This is where your mongodb server is running.
-var url = 'mongodb://127.0.0.1:27017/';
-MongoClient.connect(url, function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } else {
-    //HURRAY!! We are connected. :)
-    console.log('Connection established to', url);
+// connect db 
+mongoose.set('useCreateIndex',true)
 
-    // do some work here with the database.
+mongoose.connect(process.env.DB_URL, { useNewUrlParser: true})
+        .then(() => console.log('DB connected !'));
+        db.on('error', (err) => {
+          console.log('DB connection error:', err.message);
+      })
 
-    //Close connection
-    db.close();
-  }
-});
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-app.listen(3000, function () {
+app.use(morgan("dev"))
+app.use(bodyParser.json())
+app.use(expressValidator())
+app.use('/',routes)
+app.listen(PORT, function () {
   console.log('testttttt');
 });
 
+module.exports = app;
